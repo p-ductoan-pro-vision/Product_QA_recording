@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProVision Admin – Login Mockup</title>
+<style>
+    :root {
+        --brand: #1565c0;
+        --brand-600: #0f56ad;
+        --brand-700: #0b4691;
+        --brand-50: #eaf2fd;
+        --ink: #3a3a3c;
+        --ink-strong: #1f2937;
+        --ink-2: #6b7280;
+        --ink-3: #9ca3af;
+        --line: #e5e7eb;
+        --bg-soft: #f6f7f9;
+        --red: #e5484d;
+        --red-50: #fdecec;
+        --green: #16a34a;
+        --green-50: #e8f7ee;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+        font-family: "Inter", "Segoe UI", "Hiragino Sans", "Yu Gothic UI", "Meiryo", system-ui, sans-serif;
+        color: var(--ink);
+        background: #fff;
+        min-width: 1024px;
+    }
+    button, input { font-family: inherit; }
+    svg { display: block; }
+
+    .page { display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh; }
+
+    /* ---------- Brand side ---------- */
+    .brand {
+        position: relative; overflow: hidden; color: #fff;
+        background: linear-gradient(150deg, #1a73d9 0%, var(--brand) 45%, var(--brand-700) 100%);
+        padding: 48px 56px; display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .brand::before, .brand::after {
+        content: ""; position: absolute; border-radius: 50%; border: 1px solid rgba(255,255,255,.14);
+    }
+    .brand::before { width: 520px; height: 520px; right: -180px; top: -160px; box-shadow: 0 0 0 70px rgba(255,255,255,.03), 0 0 0 140px rgba(255,255,255,.02); }
+    .brand::after { width: 360px; height: 360px; left: -140px; bottom: -150px; box-shadow: 0 0 0 60px rgba(255,255,255,.03); }
+    .logo-card {
+        position: relative; z-index: 1; align-self: flex-start;
+        background: #fff; border-radius: 12px; padding: 10px 16px; box-shadow: 0 8px 24px rgba(0,0,0,.12);
+    }
+    .logo-card img { height: 26px; }
+    .brand-main { position: relative; z-index: 1; max-width: 460px; }
+    .brand-main h1 { font-size: 32px; font-weight: 700; line-height: 1.3; letter-spacing: .3px; }
+    .brand-main p { font-size: 14px; line-height: 1.7; color: rgba(255,255,255,.8); margin-top: 12px; }
+    .features { margin-top: 32px; display: flex; flex-direction: column; gap: 14px; }
+    .feature { display: flex; align-items: center; gap: 14px; }
+    .feature .ic {
+        width: 40px; height: 40px; border-radius: 11px; background: rgba(255,255,255,.14);
+        border: 1px solid rgba(255,255,255,.2); display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .feature .ic svg { width: 20px; height: 20px; }
+    .feature b { font-size: 14px; display: block; }
+    .feature span { font-size: 12px; color: rgba(255,255,255,.72); }
+    .brand-foot { position: relative; z-index: 1; font-size: 12px; color: rgba(255,255,255,.6); }
+
+    /* ---------- Form side ---------- */
+    .side { position: relative; display: flex; align-items: center; justify-content: center; padding: 48px; background: var(--bg-soft); }
+    .side-top { position: absolute; top: 24px; right: 28px; }
+    .lang {
+        display: inline-flex; background: #fff; border: 1px solid var(--line);
+        border-radius: 8px; padding: 2px; gap: 2px;
+    }
+    .lang button {
+        border: none; background: transparent; font-size: 11px; font-weight: 600;
+        color: var(--ink-2); padding: 4px 9px; border-radius: 6px; cursor: pointer;
+    }
+    .lang button.active { background: var(--brand-50); color: var(--brand); }
+
+    .card {
+        width: 400px; background: #fff; border-radius: 18px; padding: 36px 36px 32px;
+        box-shadow: 0 16px 40px rgba(15,35,70,.10), 0 2px 6px rgba(15,35,70,.05);
+        display: flex; flex-direction: column; gap: 18px;
+    }
+    .card.enter { animation: rise .2s ease; }
+    @keyframes rise { from { opacity: 0; transform: translateY(6px); } }
+    .head-ic {
+        width: 52px; height: 52px; border-radius: 14px; background: var(--brand-50); color: var(--brand);
+        display: flex; align-items: center; justify-content: center;
+    }
+    .head-ic svg { width: 26px; height: 26px; }
+    .head-ic.success { background: var(--green-50); color: var(--green); }
+    .title h2 { font-size: 22px; font-weight: 700; color: var(--ink-strong); }
+    .title p { font-size: 13px; color: var(--ink-2); margin-top: 6px; line-height: 1.6; }
+    .title p b { color: var(--ink-strong); word-break: break-all; }
+
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field-top { display: flex; justify-content: space-between; align-items: center; }
+    .field label { font-size: 12px; font-weight: 600; color: var(--ink-2); }
+    .input-wrap {
+        display: flex; align-items: center; gap: 10px; height: 46px; padding: 0 14px;
+        border: 1px solid var(--line); border-radius: 11px; background: #fff;
+        transition: border-color .15s, box-shadow .15s;
+    }
+    .input-wrap > svg { width: 18px; height: 18px; color: var(--ink-3); flex-shrink: 0; }
+    .input-wrap input { flex: 1; min-width: 0; border: none; outline: none; font-size: 14px; color: var(--ink-strong); background: transparent; }
+    .input-wrap input::placeholder { color: var(--ink-3); }
+    .input-wrap:focus-within { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(21,101,192,.12); }
+    .input-wrap:focus-within > svg { color: var(--brand); }
+    .input-wrap.error { border-color: var(--red); box-shadow: 0 0 0 3px rgba(229,72,77,.10); }
+    .input-wrap.error > svg { color: var(--red); }
+    .input-wrap.disabled { background: var(--bg-soft); }
+    .eye { border: none; background: transparent; color: var(--ink-3); cursor: pointer; display: inline-flex; padding: 2px; }
+    .eye:hover { color: var(--ink); }
+    .eye svg { width: 18px; height: 18px; }
+
+    .link { border: none; background: none; color: var(--brand); font-size: 12px; font-weight: 600; cursor: pointer; padding: 0; }
+    .link:hover { text-decoration: underline; }
+    .link:disabled { color: var(--ink-3); cursor: default; text-decoration: none; }
+
+    .banner {
+        font-size: 12px; font-weight: 500; line-height: 1.5; padding: 10px 12px; border-radius: 9px;
+        display: flex; gap: 8px; align-items: flex-start;
+    }
+    .banner svg { width: 15px; height: 15px; flex-shrink: 0; margin-top: 1px; }
+    .banner.error { background: var(--red-50); color: #b91c1c; }
+    .banner.success { background: var(--green-50); color: #166534; }
+    .banner.info { background: var(--brand-50); color: var(--brand-600); }
+
+    .btn {
+        border: none; border-radius: 11px; height: 48px; width: 100%; font-size: 14px; font-weight: 700;
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;
+        background: var(--brand); color: #fff; box-shadow: 0 6px 14px rgba(21,101,192,.25);
+        transition: filter .15s, transform .05s;
+    }
+    .btn:hover:not(:disabled) { filter: brightness(.96); }
+    .btn:active:not(:disabled) { transform: scale(.99); }
+    .btn:disabled { cursor: not-allowed; opacity: .75; }
+    .btn.success { background: var(--green); box-shadow: 0 6px 14px rgba(22,163,74,.25); }
+    .btn.outline { background: #fff; color: var(--ink); border: 1px solid var(--line); box-shadow: none; }
+    .btn.outline:hover:not(:disabled) { border-color: var(--brand); color: var(--brand); filter: none; }
+    .btn svg { width: 17px; height: 17px; }
+    .spinner {
+        width: 17px; height: 17px; border-radius: 50%;
+        border: 2px solid rgba(255,255,255,.4); border-top-color: #fff; animation: spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .back { display: flex; justify-content: center; }
+    .back .link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; }
+    .back .link svg { width: 15px; height: 15px; }
+
+    .resend { text-align: center; font-size: 12px; color: var(--ink-2); }
+    .steps-hint { display: flex; flex-direction: column; gap: 8px; font-size: 12px; color: var(--ink-2); background: var(--bg-soft); border-radius: 10px; padding: 12px 14px; }
+    .steps-hint div { display: flex; gap: 8px; }
+    .steps-hint .n { width: 18px; height: 18px; border-radius: 50%; background: var(--brand-50); color: var(--brand); font-size: 10px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+    .preview {
+        position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 90;
+        background: rgba(17, 24, 39, .92); color: #cbd5e1; border-radius: 999px; padding: 5px 6px 5px 14px;
+        display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    .preview button { border: none; background: transparent; color: #cbd5e1; font-size: 11px; font-weight: 600; padding: 5px 10px; border-radius: 999px; cursor: pointer; }
+    .preview button:hover { background: rgba(255,255,255,.1); }
+    .preview button.active { background: #fff; color: var(--ink-strong); }
+    .preview .x { padding: 5px 8px; color: #94a3b8; }
+</style>
+</head>
+<body>
+
+<div class="page">
+    <aside class="brand" id="brand"></aside>
+    <main class="side">
+        <div class="side-top" id="lang-root"></div>
+        <div id="card-root"></div>
+    </main>
+</div>
+<div id="preview-root"></div>
+
+<script>
+const ICONS = {
+    user: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>',
+    lock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
+    mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>',
+    mailCheck: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8"/><path d="M3 7l9 6 9-6M16 19l2 2 4-4"/></svg>',
+    keyRound: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3M14 9l2 2"/></svg>',
+    shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>',
+    eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+    eyeOff: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18M10.6 5.1A10.5 10.5 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4.2M6.6 6.6A17 17 0 0 0 2 12s3.5 7 10 7a10 10 0 0 0 5.4-1.6M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>',
+    alert: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5v.5"/></svg>',
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>',
+    arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+    back: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>',
+    send: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg>',
+    record: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/></svg>',
+    play: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M8 5.5v13l10.5-6.5z"/></svg>',
+    terminal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3M13 15h4"/></svg>'
+};
+
+const I18N = {
+    en: {
+        app_title: 'Auto Test', app_desc: 'Record scenarios with the browser extension, run them automatically on the server and review results in real time.',
+        f1: 'Record scenarios', f1d: 'Capture every click and input with the extension',
+        f2: 'Run automatically', f2d: 'Replay scenarios on the server with one click',
+        f3: 'Live log & reports', f3d: 'Follow each step and find failures instantly',
+        login: 'Sign in', login_sub: 'Sign in to the admin dashboard.',
+        username: 'Username', password: 'Password', ph_user: 'Enter your username', ph_pass: 'Enter your password',
+        forgot: 'Forgot password?', logging_in: 'Signing in...', login_ok: 'Signed in – redirecting...',
+        required: 'Please enter username and password', invalid: 'Invalid username or password',
+        forgot_title: 'Forgot password', forgot_sub: 'Enter the email registered to your account. We will send you a link to reset your password.',
+        email: 'Email', ph_email: 'name@example.com', send_link: 'Send reset link', sending: 'Sending...',
+        email_required: 'Please enter your email', email_invalid: 'Please enter a valid email address',
+        back_login: 'Back to sign in',
+        sent_title: 'Check your email', sent_sub: 'We sent a password reset link to <b>{email}</b>.',
+        sent_h1: 'Open the email from ProVision', sent_h2: 'Click the link to set a new password (valid for 30 minutes)', sent_h3: 'Not there? Check your spam folder',
+        resend: 'Resend email', resend_in: 'Resend available in {s}s', resent: 'Reset link sent again',
+        no_email: 'Didn\'t receive the email?',
+        footer: '© 2026 ProVision. All rights reserved.',
+        preview: 'Preview', pv_login: 'Login', pv_error: 'Error', pv_forgot: 'Forgot', pv_sent: 'Sent'
+    },
+    ja: {
+        app_title: '自動テスト', app_desc: '拡張機能でシナリオを記録し、サーバーで自動実行。結果をリアルタイムで確認できます。',
+        f1: 'シナリオ記録', f1d: '拡張機能でクリックや入力をそのまま記録',
+        f2: '自動実行', f2d: 'ワンクリックでサーバー上で再生',
+        f3: 'ライブログ・レポート', f3d: '各ステップを追跡し、失敗箇所をすぐに特定',
+        login: 'ログイン', login_sub: '管理画面にログインしてください。',
+        username: 'ユーザー名', password: 'パスワード', ph_user: 'ユーザー名を入力', ph_pass: 'パスワードを入力',
+        forgot: 'パスワードをお忘れですか？', logging_in: 'ログイン中...', login_ok: 'ログインしました – 移動中...',
+        required: 'ユーザー名とパスワードを入力してください', invalid: 'ユーザー名またはパスワードが正しくありません',
+        forgot_title: 'パスワード再設定', forgot_sub: 'アカウントに登録されたメールアドレスを入力してください。パスワード再設定用のリンクをお送りします。',
+        email: 'メールアドレス', ph_email: 'name@example.com', send_link: '再設定リンクを送信', sending: '送信中...',
+        email_required: 'メールアドレスを入力してください', email_invalid: '正しいメールアドレスを入力してください',
+        back_login: 'ログインに戻る',
+        sent_title: 'メールを確認してください', sent_sub: '<b>{email}</b> にパスワード再設定用のリンクを送信しました。',
+        sent_h1: 'ProVision からのメールを開く', sent_h2: 'リンクをクリックして新しいパスワードを設定（有効期限30分）', sent_h3: '届かない場合は迷惑メールフォルダをご確認ください',
+        resend: 'メールを再送信', resend_in: '{s}秒後に再送信できます', resent: '再設定リンクを再送信しました',
+        no_email: 'メールが届きませんか？',
+        footer: '© 2026 ProVision. All rights reserved.',
+        preview: 'プレビュー', pv_login: 'ログイン', pv_error: 'エラー', pv_forgot: '再設定', pv_sent: '送信済み'
+    },
+    vi: {
+        app_title: 'Kiểm thử tự động', app_desc: 'Ghi kịch bản bằng extension, chạy tự động trên server và theo dõi kết quả theo thời gian thực.',
+        f1: 'Ghi kịch bản', f1d: 'Ghi lại mọi thao tác click và nhập liệu bằng extension',
+        f2: 'Chạy tự động', f2d: 'Phát lại kịch bản trên server chỉ với một cú bấm',
+        f3: 'Log trực tiếp & báo cáo', f3d: 'Theo dõi từng bước, tìm lỗi ngay lập tức',
+        login: 'Đăng nhập', login_sub: 'Đăng nhập vào trang quản trị.',
+        username: 'Tên đăng nhập', password: 'Mật khẩu', ph_user: 'Nhập tên đăng nhập', ph_pass: 'Nhập mật khẩu',
+        forgot: 'Quên mật khẩu?', logging_in: 'Đang đăng nhập...', login_ok: 'Đăng nhập thành công – đang chuyển trang...',
+        required: 'Nhập tên đăng nhập và mật khẩu', invalid: 'Sai tên đăng nhập hoặc mật khẩu',
+        forgot_title: 'Quên mật khẩu', forgot_sub: 'Nhập email đã đăng ký cho tài khoản. Chúng tôi sẽ gửi link để đặt lại mật khẩu.',
+        email: 'Email', ph_email: 'name@example.com', send_link: 'Gửi link đặt lại', sending: 'Đang gửi...',
+        email_required: 'Vui lòng nhập email', email_invalid: 'Email không đúng định dạng',
+        back_login: 'Quay lại đăng nhập',
+        sent_title: 'Kiểm tra email của bạn', sent_sub: 'Đã gửi link đặt lại mật khẩu tới <b>{email}</b>.',
+        sent_h1: 'Mở email từ ProVision', sent_h2: 'Bấm vào link để đặt mật khẩu mới (hiệu lực 30 phút)', sent_h3: 'Không thấy? Hãy kiểm tra thư mục spam',
+        resend: 'Gửi lại email', resend_in: 'Có thể gửi lại sau {s}s', resent: 'Đã gửi lại link đặt lại mật khẩu',
+        no_email: 'Chưa nhận được email?',
+        footer: '© 2026 ProVision. All rights reserved.',
+        preview: 'Xem trước', pv_login: 'Đăng nhập', pv_error: 'Lỗi', pv_forgot: 'Quên MK', pv_sent: 'Đã gửi'
+    }
+};
+const LANGS = [['en', 'EN'], ['ja', '日本'], ['vi', 'VN']];
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const S = {
+    lang: 'ja', view: 'login',
+    user: '', pass: '', showPass: false, loginStatus: 'idle', loginMsg: '', errUser: false, errPass: false,
+    email: '', forgotStatus: 'idle', forgotMsg: '', errEmail: false,
+    resendLeft: 0, resendTimer: null, resentNote: false,
+    showPreview: true, preview: 'login'
+};
+
+function t(key, vars) {
+    let s = (I18N[S.lang] && I18N[S.lang][key]) || I18N.en[key] || key;
+    if (vars) Object.keys(vars).forEach(k => { s = s.split('{' + k + '}').join(vars[k]); });
+    return s;
+}
+function esc(v) { return String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+const $ = id => document.getElementById(id);
+
+function renderBrand() {
+    $('brand').innerHTML = `
+        <div class="logo-card"><img src="logo/logo.png" alt="ProVision"></div>
+        <div class="brand-main">
+            <h1>${t('app_title')}</h1>
+            <p>${t('app_desc')}</p>
+            <div class="features">
+                <div class="feature"><div class="ic">${ICONS.record}</div><div><b>${t('f1')}</b><span>${t('f1d')}</span></div></div>
+                <div class="feature"><div class="ic">${ICONS.play}</div><div><b>${t('f2')}</b><span>${t('f2d')}</span></div></div>
+                <div class="feature"><div class="ic">${ICONS.terminal}</div><div><b>${t('f3')}</b><span>${t('f3d')}</span></div></div>
+            </div>
+        </div>
+        <div class="brand-foot">${t('footer')}</div>`;
+}
+
+function renderLang() {
+    $('lang-root').innerHTML = `<div class="lang">${LANGS.map(([k, l]) =>
+        `<button data-act="lang" data-lang="${k}" class="${k === S.lang ? 'active' : ''}">${l}</button>`).join('')}</div>`;
+}
+
+function banner(type, text) {
+    const icon = type === 'error' ? ICONS.alert : type === 'success' ? ICONS.check : ICONS.mail;
+    return `<div class="banner ${type}">${icon}<span>${text}</span></div>`;
+}
+
+function viewLogin() {
+    const busy = S.loginStatus === 'loading' || S.loginStatus === 'success';
+    let btn;
+    if (S.loginStatus === 'loading') btn = `<button class="btn" disabled><span class="spinner"></span>${t('logging_in')}</button>`;
+    else if (S.loginStatus === 'success') btn = `<button class="btn success" disabled>${ICONS.check}${t('login_ok')}</button>`;
+    else btn = `<button class="btn" data-act="login">${t('login')}${ICONS.arrow}</button>`;
+    return `
+        <div class="head-ic">${ICONS.shield}</div>
+        <div class="title"><h2>${t('login')}</h2><p>${t('login_sub')}</p></div>
+        <div class="field">
+            <label>${t('username')}</label>
+            <div class="input-wrap ${S.errUser ? 'error' : ''} ${busy ? 'disabled' : ''}">
+                ${ICONS.user}<input data-field="user" autocomplete="username" placeholder="${t('ph_user')}" value="${esc(S.user)}" ${busy ? 'disabled' : ''}>
+            </div>
+        </div>
+        <div class="field">
+            <div class="field-top">
+                <label>${t('password')}</label>
+                <button class="link" data-act="go-forgot" ${busy ? 'disabled' : ''}>${t('forgot')}</button>
+            </div>
+            <div class="input-wrap ${S.errPass ? 'error' : ''} ${busy ? 'disabled' : ''}">
+                ${ICONS.lock}<input data-field="pass" type="${S.showPass ? 'text' : 'password'}" autocomplete="current-password" placeholder="${t('ph_pass')}" value="${esc(S.pass)}" ${busy ? 'disabled' : ''}>
+                <button class="eye" data-act="eye" type="button">${S.showPass ? ICONS.eyeOff : ICONS.eye}</button>
+            </div>
+        </div>
+        ${S.loginStatus === 'error' ? banner('error', t(S.loginMsg)) : ''}
+        ${btn}`;
+}
+
+function viewForgot() {
+    const busy = S.forgotStatus === 'loading';
+    return `
+        <div class="head-ic">${ICONS.keyRound}</div>
+        <div class="title"><h2>${t('forgot_title')}</h2><p>${t('forgot_sub')}</p></div>
+        <div class="field">
+            <label>${t('email')}</label>
+            <div class="input-wrap ${S.errEmail ? 'error' : ''} ${busy ? 'disabled' : ''}">
+                ${ICONS.mail}<input data-field="email" type="email" autocomplete="email" placeholder="${t('ph_email')}" value="${esc(S.email)}" ${busy ? 'disabled' : ''}>
+            </div>
+        </div>
+        ${S.forgotStatus === 'error' ? banner('error', t(S.forgotMsg)) : ''}
+        ${busy
+            ? `<button class="btn" disabled><span class="spinner"></span>${t('sending')}</button>`
+            : `<button class="btn" data-act="send">${ICONS.send}${t('send_link')}</button>`}
+        <div class="back"><button class="link" data-act="go-login">${ICONS.back}${t('back_login')}</button></div>`;
+}
+
+function viewSent() {
+    return `
+        <div class="head-ic success">${ICONS.mailCheck}</div>
+        <div class="title"><h2>${t('sent_title')}</h2><p>${t('sent_sub', { email: esc(S.email || 'admin@provision.jp') })}</p></div>
+        <div class="steps-hint">
+            <div><span class="n">1</span>${t('sent_h1')}</div>
+            <div><span class="n">2</span>${t('sent_h2')}</div>
+            <div><span class="n">3</span>${t('sent_h3')}</div>
+        </div>
+        ${S.resentNote ? banner('success', t('resent')) : ''}
+        <button class="btn" data-act="go-login">${ICONS.back}${t('back_login')}</button>
+        <div class="resend">${t('no_email')} <span id="resend-slot">${resendSlot()}</span></div>`;
+}
+
+function resendSlot() {
+    return S.resendLeft <= 0
+        ? `<button class="link" data-act="resend">${t('resend')}</button>`
+        : `<span style="color:var(--ink-3);font-variant-numeric:tabular-nums">${t('resend_in', { s: S.resendLeft })}</span>`;
+}
+
+function updateResendSlot() {
+    const slot = $('resend-slot');
+    if (slot) slot.innerHTML = resendSlot();
+}
+
+function renderCard(animate = false) {
+    const html = S.view === 'forgot' ? viewForgot() : S.view === 'sent' ? viewSent() : viewLogin();
+    $('card-root').innerHTML = `<div class="card ${animate ? 'enter' : ''}">${html}</div>`;
+}
+
+function renderPreview() {
+    const root = $('preview-root');
+    if (!S.showPreview) { root.innerHTML = ''; return; }
+    root.innerHTML = `
+        <div class="preview">
+            <span>${t('preview')}</span>
+            ${['login', 'error', 'forgot', 'sent'].map(p =>
+                `<button class="${S.preview === p ? 'active' : ''}" data-act="preview" data-p="${p}">${t('pv_' + p)}</button>`).join('')}
+            <button class="x" data-act="hide-preview" title="Hide">✕</button>
+        </div>`;
+}
+
+function renderAll() {
+    document.documentElement.lang = S.lang;
+    renderBrand(); renderLang(); renderCard(); renderPreview();
+}
+
+function go(view) {
+    S.view = view;
+    S.preview = view;
+    renderCard(true); renderPreview();
+    const first = document.querySelector('.card input:not([disabled])');
+    if (first && !first.value) first.focus();
+}
+
+function startResendCountdown() {
+    clearInterval(S.resendTimer);
+    S.resendLeft = 60;
+    S.resendTimer = setInterval(() => {
+        S.resendLeft--;
+        if (S.resendLeft <= 0) clearInterval(S.resendTimer);
+        if (S.view === 'sent') updateResendSlot();
+    }, 1000);
+}
+
+function doLogin() {
+    S.errUser = !S.user.trim();
+    S.errPass = !S.pass;
+    if (S.errUser || S.errPass) {
+        S.loginStatus = 'error'; S.loginMsg = 'required';
+        return renderCard();
+    }
+    S.loginStatus = 'loading';
+    renderCard();
+    setTimeout(() => {
+        if (S.pass.length >= 4) {
+            S.loginStatus = 'success';
+            renderCard();
+            setTimeout(() => { location.href = 'admin.html'; }, 900);
+        } else {
+            S.loginStatus = 'error'; S.loginMsg = 'invalid'; S.errUser = S.errPass = true;
+            renderCard();
+        }
+    }, 1100);
+}
+
+function doSend() {
+    const v = S.email.trim();
+    if (!v) { S.errEmail = true; S.forgotStatus = 'error'; S.forgotMsg = 'email_required'; return renderCard(); }
+    if (!EMAIL_RE.test(v)) { S.errEmail = true; S.forgotStatus = 'error'; S.forgotMsg = 'email_invalid'; return renderCard(); }
+    S.errEmail = false;
+    S.forgotStatus = 'loading';
+    renderCard();
+    setTimeout(() => {
+        S.forgotStatus = 'idle';
+        S.resentNote = false;
+        startResendCountdown();
+        go('sent');
+    }, 1000);
+}
+
+function applyPreview(p) {
+    clearInterval(S.resendTimer);
+    S.preview = p;
+    S.loginStatus = 'idle'; S.errUser = S.errPass = false; S.showPass = false;
+    S.forgotStatus = 'idle'; S.errEmail = false; S.resentNote = false; S.resendLeft = 0;
+    if (p === 'login') { S.view = 'login'; S.user = ''; S.pass = ''; }
+    if (p === 'error') { S.view = 'login'; S.user = 'admin'; S.pass = 'abc'; S.loginStatus = 'error'; S.loginMsg = 'invalid'; S.errUser = S.errPass = true; }
+    if (p === 'forgot') { S.view = 'forgot'; S.email = ''; }
+    if (p === 'sent') { S.view = 'sent'; S.email = 'admin@provision.jp'; startResendCountdown(); S.resendLeft = 42; }
+    renderCard(true); renderPreview();
+}
+
+document.addEventListener('click', e => {
+    const a = e.target.closest('[data-act]');
+    if (!a) return;
+    switch (a.dataset.act) {
+        case 'lang': S.lang = a.dataset.lang; renderAll(); break;
+        case 'eye': S.showPass = !S.showPass; renderCard(); break;
+        case 'login': doLogin(); break;
+        case 'go-forgot':
+            S.forgotStatus = 'idle'; S.errEmail = false;
+            go('forgot');
+            break;
+        case 'go-login':
+            S.loginStatus = 'idle'; S.errUser = S.errPass = false;
+            go('login');
+            break;
+        case 'send': doSend(); break;
+        case 'resend': S.resentNote = true; startResendCountdown(); renderCard(); break;
+        case 'preview': applyPreview(a.dataset.p); break;
+        case 'hide-preview': S.showPreview = false; renderPreview(); break;
+    }
+});
+
+document.addEventListener('input', e => {
+    const el = e.target.closest('[data-field]');
+    if (!el) return;
+    S[el.dataset.field] = el.value;
+    const wrap = el.closest('.input-wrap');
+    if (wrap.classList.contains('error')) {
+        wrap.classList.remove('error');
+        if (el.dataset.field === 'user') S.errUser = false;
+        if (el.dataset.field === 'pass') S.errPass = false;
+        if (el.dataset.field === 'email') S.errEmail = false;
+    }
+});
+
+document.addEventListener('keydown', e => {
+    if (e.key !== 'Enter' || !e.target.closest('[data-field]')) return;
+    if (S.view === 'login' && S.loginStatus !== 'loading' && S.loginStatus !== 'success') doLogin();
+    if (S.view === 'forgot' && S.forgotStatus !== 'loading') doSend();
+});
+
+renderBrand(); renderLang(); renderPreview();
+const initial = location.hash.slice(1);
+applyPreview(['login', 'error', 'forgot', 'sent'].includes(initial) ? initial : 'login');
+</script>
+</body>
+</html>

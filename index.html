@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ProVision Extension – UI Mockup</title>
+<style>
+    :root {
+        --brand: #1565c0;
+        --brand-600: #0f56ad;
+        --brand-50: #eaf2fd;
+        --ink: #3a3a3c;
+        --ink-2: #6b7280;
+        --ink-3: #9ca3af;
+        --line: #e5e7eb;
+        --bg-soft: #f6f7f9;
+        --red: #e5484d;
+        --red-50: #fdecec;
+        --amber: #f59e0b;
+        --amber-50: #fef5e2;
+        --green: #16a34a;
+        --green-50: #e8f7ee;
+        --radius: 14px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: "Inter", "Segoe UI", "Hiragino Sans", "Yu Gothic UI", "Meiryo", system-ui, sans-serif;
+        background: #eef1f5;
+        color: var(--ink);
+        padding: 40px 48px 64px;
+    }
+    button { font-family: inherit; }
+
+    .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 32px; flex-wrap: wrap; }
+    .page-head h1 { font-size: 24px; font-weight: 700; color: #1f2937; }
+    .page-head p { font-size: 13px; color: var(--ink-2); margin-top: 6px; }
+    .global-lang { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--ink-2); }
+
+    .frames { display: flex; flex-wrap: wrap; gap: 40px 32px; align-items: flex-start; }
+    .frame { display: flex; flex-direction: column; gap: 10px; }
+    .frame-label { font-size: 12px; font-weight: 600; color: var(--ink-2); letter-spacing: .3px; }
+    .frame-label b { color: #1f2937; }
+
+    /* ---------- Panel ---------- */
+    .panel {
+        width: 360px;
+        background: #fff;
+        border-radius: var(--radius);
+        box-shadow: 0 12px 32px rgba(15, 35, 70, .12), 0 2px 6px rgba(15, 35, 70, .06);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .p-header {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 12px 14px 10px;
+        cursor: move;
+    }
+    .p-brand { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .p-brand img { height: 18px; display: block; }
+    .p-actions { display: flex; align-items: center; gap: 6px; }
+
+    .badge {
+        font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+        display: inline-flex; align-items: center; gap: 5px; white-space: nowrap;
+    }
+    .badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .badge.idle { background: var(--green-50); color: var(--green); }
+    .badge.recording { background: var(--red-50); color: var(--red); }
+    .badge.recording::before { animation: blink 1.2s infinite; }
+    .badge.paused { background: var(--amber-50); color: #b45309; }
+    @keyframes blink { 50% { opacity: .25; } }
+
+    .lang {
+        display: inline-flex; background: var(--bg-soft); border: 1px solid var(--line);
+        border-radius: 8px; padding: 2px; gap: 2px;
+    }
+    .lang button {
+        border: none; background: transparent; font-size: 10px; font-weight: 600;
+        color: var(--ink-2); padding: 3px 7px; border-radius: 6px; cursor: pointer;
+    }
+    .lang button.active { background: #fff; color: var(--brand); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+
+    .icon-btn {
+        width: 26px; height: 26px; border: none; background: transparent; border-radius: 7px;
+        display: inline-flex; align-items: center; justify-content: center; color: var(--ink-3); cursor: pointer;
+    }
+    .icon-btn:hover { background: var(--bg-soft); color: var(--ink); }
+    .icon-btn svg { width: 16px; height: 16px; }
+
+    /* Tabs */
+    .tabs { display: flex; border-bottom: 1px solid var(--line); padding: 0 14px; gap: 4px; }
+    .tab {
+        flex: 1; border: none; background: transparent; padding: 10px 0 9px;
+        font-size: 13px; font-weight: 600; color: var(--ink-3); cursor: pointer;
+        display: flex; align-items: center; justify-content: center; gap: 6px;
+        border-bottom: 2px solid transparent; margin-bottom: -1px;
+    }
+    .tab svg { width: 16px; height: 16px; }
+    .tab.active { color: var(--brand); border-bottom-color: var(--brand); }
+    .tab .dot-rec { width: 7px; height: 7px; border-radius: 50%; background: var(--red); animation: blink 1.2s infinite; }
+
+    .p-body { padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+
+    /* Record controls */
+    .controls { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 8px; }
+    .btn {
+        border: none; border-radius: 10px; height: 40px; font-size: 12px; font-weight: 700;
+        display: inline-flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer;
+        transition: filter .15s, transform .05s; white-space: nowrap;
+    }
+    .btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+    .btn:hover:not(:disabled) { filter: brightness(.96); }
+    .btn:active:not(:disabled) { transform: scale(.98); }
+    .btn:disabled { opacity: .4; cursor: not-allowed; }
+    .btn-primary { background: var(--brand); color: #fff; box-shadow: 0 4px 10px rgba(21,101,192,.25); }
+    .btn-pause { background: var(--amber); color: #fff; box-shadow: 0 4px 10px rgba(245,158,11,.25); }
+    .btn-dark { background: #374151; color: #fff; }
+    .btn-ghost-red { background: var(--red-50); color: var(--red); }
+    .btn-block { width: 100%; height: 46px; font-size: 13px; }
+
+    .meta-row { display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--ink-2); }
+    .meta-row .timer { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--ink); }
+
+    .banner {
+        font-size: 11px; font-weight: 500; line-height: 1.45; padding: 8px 10px; border-radius: 8px;
+        display: flex; gap: 6px; align-items: flex-start;
+    }
+    .banner svg { width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px; }
+    .banner.ok { background: var(--green-50); color: #166534; }
+    .banner.info { background: var(--brand-50); color: var(--brand-600); }
+
+    /* Lists */
+    .list {
+        background: var(--bg-soft); border: 1px solid var(--line); border-radius: 12px;
+        padding: 8px; min-height: 120px; max-height: 240px; overflow-y: auto;
+        display: flex; flex-direction: column; gap: 6px;
+    }
+    .empty {
+        flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        gap: 8px; color: var(--ink-3); font-size: 12px; padding: 18px 0; text-align: center;
+    }
+    .empty svg { width: 28px; height: 28px; opacity: .6; }
+
+    .row {
+        background: #fff; border-radius: 8px; padding: 8px 10px; display: flex; align-items: center; gap: 8px;
+        font-size: 12px; box-shadow: 0 1px 2px rgba(0,0,0,.04);
+    }
+    .row .idx { color: var(--brand); font-weight: 700; width: 18px; font-variant-numeric: tabular-nums; }
+    .row .chip {
+        font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px;
+        padding: 2px 6px; border-radius: 5px; background: var(--brand-50); color: var(--brand);
+    }
+    .row .chip.input { background: #f3e8ff; color: #7c3aed; }
+    .row .chip.nav { background: #e0f2fe; color: #0369a1; }
+    .row .desc { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #1f2937; }
+    .row .del { border: none; background: transparent; color: var(--ink-3); cursor: pointer; font-size: 16px; line-height: 1; padding: 0 2px; }
+    .row .del:hover { color: var(--red); }
+
+    .shot .thumb {
+        width: 48px; height: 32px; border-radius: 5px; flex-shrink: 0;
+        background: linear-gradient(135deg, #dbeafe, #bfdbfe 60%, #93c5fd);
+        border: 1px solid var(--line);
+    }
+    .shot .info { flex: 1; min-width: 0; }
+    .shot .name { font-size: 12px; font-weight: 600; color: #1f2937; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .shot .time { font-size: 10px; color: var(--ink-3); margin-top: 2px; }
+    .btn-save {
+        border: 1px solid var(--line); background: #fff; color: var(--ink); font-size: 11px; font-weight: 600;
+        padding: 4px 10px; border-radius: 6px; cursor: pointer;
+    }
+    .btn-save:hover { border-color: var(--brand); color: var(--brand); }
+
+    .hint { font-size: 11px; color: var(--ink-3); text-align: center; }
+    .section-title { font-size: 11px; font-weight: 700; color: var(--ink-2); text-transform: uppercase; letter-spacing: .5px; display: flex; justify-content: space-between; }
+    .section-title span:last-child { font-weight: 600; color: var(--ink-3); text-transform: none; letter-spacing: 0; }
+
+    /* Footer */
+    .p-footer {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 10px 14px; border-top: 1px solid var(--line); background: #fcfcfd;
+    }
+    .user { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ink); font-weight: 600; }
+    .avatar {
+        width: 24px; height: 24px; border-radius: 50%; background: var(--brand-50); color: var(--brand);
+        display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700;
+    }
+    .logout {
+        border: none; background: transparent; color: var(--red); font-size: 12px; font-weight: 600;
+        display: inline-flex; align-items: center; gap: 5px; cursor: pointer; padding: 4px 6px; border-radius: 6px;
+    }
+    .logout:hover { background: var(--red-50); }
+    .logout svg { width: 14px; height: 14px; }
+</style>
+</head>
+<body>
+
+<div class="page-head">
+    <div>
+        <h1>ProVision Extension – UI Mockup</h1>
+        <p>Panel 360px · Tabs Record / Capture · Start/Pause merged · Language switch EN / 日本 / VN</p>
+    </div>
+    <div class="global-lang">
+        <span>All frames:</span>
+        <div class="lang" id="global-lang"></div>
+    </div>
+</div>
+
+<div class="frames" id="frames"></div>
+
+<script>
+const ICONS = {
+    record: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4" fill="currentColor" stroke="none"/></svg>',
+    camera: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.5"/></svg>',
+    play: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>',
+    pause: '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>',
+    stop: '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>',
+    trash: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg>',
+    close: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+    minimize: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 12h12"/></svg>',
+    logout: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 16l-4-4 4-4M6 12h10"/></svg>',
+    list: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg>',
+    image: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/></svg>',
+    check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>',
+    info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>'
+};
+
+const I18N = {
+    en: {
+        record: 'Record', capture: 'Capture',
+        start: 'Start', pause: 'Pause', resume: 'Resume', stop: 'Stop', clear: 'Clear all',
+        idle: 'Idle', recording: 'Recording', paused: 'Paused',
+        steps: 'Steps', no_data: 'No steps yet. Press Start to begin recording.',
+        login_saved: 'Login for this account is saved (3 steps)',
+        capture_btn: 'Capture screenshot',
+        capture_hint: 'The panel is hidden automatically while capturing.',
+        screenshots: 'Screenshots', no_shots: 'No screenshots yet',
+        save: 'Save', logout: 'Logout', admin: 'Admin',
+        f_idle: 'Record – Idle', f_rec: 'Record – Recording', f_pause: 'Record – Paused',
+        f_cap0: 'Capture – Empty', f_cap1: 'Capture – With screenshots'
+    },
+    ja: {
+        record: '記録', capture: 'キャプチャ',
+        start: '開始', pause: '一時停止', resume: '再開', stop: '停止', clear: '全削除',
+        idle: '未記録', recording: '記録中', paused: '記録中断',
+        steps: 'ステップ', no_data: 'データがありません。「開始」で記録を始めます。',
+        login_saved: 'このアカウントのログイン情報は保存済みです（3ステップ）',
+        capture_btn: 'スクリーンショット',
+        capture_hint: '撮影中はパネルが自動的に非表示になります。',
+        screenshots: 'スクリーンショット', no_shots: 'スクリーンショットなし',
+        save: '保存', logout: 'ログアウト', admin: '管理者',
+        f_idle: '記録 – 未記録', f_rec: '記録 – 記録中', f_pause: '記録 – 記録中断',
+        f_cap0: 'キャプチャ – 空', f_cap1: 'キャプチャ – 撮影済み'
+    },
+    vi: {
+        record: 'Ghi', capture: 'Chụp',
+        start: 'Bắt đầu', pause: 'Tạm dừng', resume: 'Tiếp tục', stop: 'Dừng', clear: 'Xóa hết',
+        idle: 'Chưa ghi', recording: 'Đang ghi', paused: 'Tạm dừng',
+        steps: 'Các bước', no_data: 'Chưa có dữ liệu. Bấm Bắt đầu để ghi.',
+        login_saved: 'Đã lưu thông tin đăng nhập của tài khoản này (3 bước)',
+        capture_btn: 'Chụp màn hình',
+        capture_hint: 'Panel sẽ tự ẩn trong lúc chụp.',
+        screenshots: 'Ảnh chụp', no_shots: 'Chưa có ảnh chụp',
+        save: 'Lưu', logout: 'Đăng xuất', admin: 'Quản trị',
+        f_idle: 'Ghi – Chưa ghi', f_rec: 'Ghi – Đang ghi', f_pause: 'Ghi – Tạm dừng',
+        f_cap0: 'Chụp – Trống', f_cap1: 'Chụp – Đã có ảnh'
+    }
+};
+const LANGS = [['en', 'EN'], ['ja', '日本'], ['vi', 'VN']];
+
+const SAMPLE_STEPS = [
+    { type: 'nav', label: 'Navigate', desc: 'https://demo.example.jp/login' },
+    { type: 'input', label: 'Input', desc: '#username = "teacher01"' },
+    { type: 'input', label: 'Input', desc: '#password = "••••••"' },
+    { type: 'click', label: 'Click', desc: 'button "ログイン"' },
+    { type: 'click', label: 'Click', desc: 'a "国語 – 漢字ドリル"' },
+    { type: 'click', label: 'Click', desc: 'div.icon__answer--1' }
+];
+const SAMPLE_SHOTS = [
+    { name: 'kanji_drill/1024.png', time: '14:32:08' },
+    { name: 'kanji_drill/1025.png', time: '14:33:41' },
+    { name: 'calculation/2210.png', time: '14:36:02' }
+];
+
+const FRAMES = [
+    { key: 'f_idle', tab: 'record', phase: 'idle', steps: 0, shots: 0 },
+    { key: 'f_rec', tab: 'record', phase: 'recording', steps: 6, shots: 0, banner: true },
+    { key: 'f_pause', tab: 'record', phase: 'paused', steps: 4, shots: 0 },
+    { key: 'f_cap0', tab: 'capture', phase: 'idle', steps: 0, shots: 0 },
+    { key: 'f_cap1', tab: 'capture', phase: 'idle', steps: 0, shots: 3 }
+].map(f => ({ ...f, lang: 'ja', steps: SAMPLE_STEPS.slice(0, f.steps), shots: SAMPLE_SHOTS.slice(0, f.shots) }));
+
+function langSwitch(active) {
+    return `<div class="lang">${LANGS.map(([k, l]) =>
+        `<button data-act="lang" data-lang="${k}" class="${k === active ? 'active' : ''}">${l}</button>`).join('')}</div>`;
+}
+
+function renderRecord(s, t) {
+    const hasSteps = s.steps.length > 0;
+    let main;
+    if (s.phase === 'recording') main = `<button class="btn btn-pause" data-act="toggle">${ICONS.pause}${t.pause}</button>`;
+    else if (s.phase === 'paused') main = `<button class="btn btn-primary" data-act="toggle">${ICONS.play}${t.resume}</button>`;
+    else main = `<button class="btn btn-primary" data-act="toggle">${ICONS.play}${t.start}</button>`;
+
+    const rows = hasSteps
+        ? s.steps.map((st, i) => `
+            <div class="row">
+                <span class="idx">${i + 1}</span>
+                <span class="chip ${st.type}">${st.label}</span>
+                <span class="desc" title="${st.desc}">${st.desc}</span>
+                <button class="del" data-act="del-step" data-i="${i}">&times;</button>
+            </div>`).join('')
+        : `<div class="empty">${ICONS.list}<span>${t.no_data}</span></div>`;
+
+    const timer = s.phase === 'recording' ? '00:42' : s.phase === 'paused' ? '00:27' : '00:00';
+
+    return `
+        <div class="controls">
+            ${main}
+            <button class="btn btn-dark" data-act="stop" ${hasSteps ? '' : 'disabled'}>${ICONS.stop}${t.stop}</button>
+            <button class="btn btn-ghost-red" data-act="clear" ${hasSteps ? '' : 'disabled'}>${ICONS.trash}${t.clear}</button>
+        </div>
+        ${s.banner ? `<div class="banner ok">${ICONS.check}<span>${t.login_saved}</span></div>` : ''}
+        <div class="section-title"><span>${t.steps} (${s.steps.length})</span><span class="timer">${timer}</span></div>
+        <div class="list">${rows}</div>`;
+}
+
+function renderCapture(s, t) {
+    const rows = s.shots.length
+        ? s.shots.map((sh, i) => `
+            <div class="row shot">
+                <div class="thumb"></div>
+                <div class="info"><div class="name" title="${sh.name}">${sh.name}</div><div class="time">${sh.time}</div></div>
+                <button class="btn-save">${t.save}</button>
+                <button class="del" data-act="del-shot" data-i="${i}">&times;</button>
+            </div>`).join('')
+        : `<div class="empty">${ICONS.image}<span>${t.no_shots}</span></div>`;
+
+    return `
+        <button class="btn btn-primary btn-block" data-act="shoot">${ICONS.camera}${t.capture_btn}</button>
+        <div class="hint">${t.capture_hint}</div>
+        <div class="section-title"><span>${t.screenshots} (${s.shots.length})</span><span></span></div>
+        <div class="list">${rows}</div>`;
+}
+
+function renderPanel(s) {
+    const t = I18N[s.lang];
+    const isRec = s.phase === 'recording';
+    return `
+        <div class="p-header">
+            <div class="p-brand">
+                <img src="logo/logo.png" alt="ProVision">
+                <span class="badge ${s.phase}">${t[s.phase]}</span>
+            </div>
+            <div class="p-actions">
+                ${langSwitch(s.lang)}
+                <button class="icon-btn" title="Close">${ICONS.close}</button>
+            </div>
+        </div>
+        <div class="tabs">
+            <button class="tab ${s.tab === 'record' ? 'active' : ''}" data-act="tab" data-tab="record">
+                ${isRec ? '<span class="dot-rec"></span>' : ICONS.record}${t.record}
+            </button>
+            <button class="tab ${s.tab === 'capture' ? 'active' : ''}" data-act="tab" data-tab="capture">
+                ${ICONS.camera}${t.capture}
+            </button>
+        </div>
+        <div class="p-body">${s.tab === 'record' ? renderRecord(s, t) : renderCapture(s, t)}</div>
+        <div class="p-footer">
+            <div class="user"><span class="avatar">A</span>${t.admin}</div>
+            <button class="logout">${ICONS.logout}${t.logout}</button>
+        </div>`;
+}
+
+const framesEl = document.getElementById('frames');
+
+function renderAll() {
+    framesEl.innerHTML = FRAMES.map((f, i) => `
+        <div class="frame">
+            <div class="frame-label"><b>${String(i + 1).padStart(2, '0')}</b> · ${I18N[f.lang][f.key]}</div>
+            <div class="panel" data-i="${i}">${renderPanel(f)}</div>
+        </div>`).join('');
+}
+
+framesEl.addEventListener('click', e => {
+    const btn = e.target.closest('[data-act]');
+    if (!btn) return;
+    const s = FRAMES[+btn.closest('.panel').dataset.i];
+    switch (btn.dataset.act) {
+        case 'lang': s.lang = btn.dataset.lang; break;
+        case 'tab': s.tab = btn.dataset.tab; break;
+        case 'toggle':
+            s.phase = s.phase === 'recording' ? 'paused' : 'recording';
+            if (!s.steps.length) s.steps = SAMPLE_STEPS.slice(0, 1);
+            break;
+        case 'stop': s.phase = 'idle'; s.steps = []; s.banner = false; break;
+        case 'clear': s.steps = []; break;
+        case 'del-step': s.steps = s.steps.filter((_, i) => i !== +btn.dataset.i); break;
+        case 'del-shot': s.shots = s.shots.filter((_, i) => i !== +btn.dataset.i); break;
+        case 'shoot': {
+            const n = s.shots.length + 1;
+            const now = new Date().toTimeString().slice(0, 8);
+            s.shots = [...s.shots, { name: `screenshot_${n}.png`, time: now }];
+            break;
+        }
+    }
+    renderAll();
+});
+
+const globalLang = document.getElementById('global-lang');
+function renderGlobalLang(active) {
+    globalLang.innerHTML = LANGS.map(([k, l]) =>
+        `<button data-lang="${k}" class="${k === active ? 'active' : ''}">${l}</button>`).join('');
+}
+globalLang.addEventListener('click', e => {
+    const b = e.target.closest('[data-lang]');
+    if (!b) return;
+    FRAMES.forEach(f => f.lang = b.dataset.lang);
+    renderGlobalLang(b.dataset.lang);
+    renderAll();
+});
+
+renderGlobalLang('ja');
+renderAll();
+</script>
+</body>
+</html>
